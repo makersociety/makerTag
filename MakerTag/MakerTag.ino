@@ -93,9 +93,8 @@ void setup()
   }
   
   // Attach some interrupts
-  attachInterrupt(FIRE_GUN_PIN, shoot, FALLING);    
-  attachInterrupt(RELOAD_GUN_PIN, reload, FALLING); 
-  
+  attachInterrupt(FIRE_GUN_PIN, shoot, LOW);    
+ 
   irrecv.enableIRIn(); // Start the receiver
 }
 
