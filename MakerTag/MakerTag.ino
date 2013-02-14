@@ -113,7 +113,7 @@ void loop() {
         else if(hit == 5){  // You are dead.
           digitalWrite(HIT_LED, HIGH);
           delay(200);
-          while(hit==5 && digitalRead(5) == HIGH){
+          while(hit==5 && digitalRead(RESET_GUN_PIN) == HIGH){
             // Blink the lights
             digitalWrite(HIT_LED0, LOW);
             digitalWrite(HIT_LED1, LOW);
