@@ -11,11 +11,11 @@
 #endif
 
 // Declare some IR shit
+int RECV_PIN = 6;     // IR Recieve (PD6)
+int IR_FIRE = 3;      // IR LED for transmit(PD3)
 IRrecv irrecv(RECV_PIN);
 decode_results results;
 IRsend irsend;
-int RECV_PIN = 6;     // IR Recieve (PD6)
-int IR_FIRE = 3;      // IR LED for transmit(PD3)
 
 // Declare pin numbers
 int FIRE_GUN_PIN = 2;        // Trigger (PD2)
@@ -46,7 +46,7 @@ int triggerDelay = 250;  // ms that the gun will be inactve after trigger press
 volatile int hit;
 volatile int ammo;
 int currentTeam;      // The current gun ID
-int cureentEnemy;     // People trying to kill you
+int currentEnemy;     // People trying to kill you
 
 
 /********************
@@ -63,9 +63,9 @@ void setup()
   pinMode(FIRE_GUN_PIN,INPUT_PULLUP);
   pinMode(RESET_GUN_PIN,INPUT_PULLUP);
   pinMode(RELOAD_GUN_PIN, INPUT_PULLUP);
-  pinMode(TEAM_A, INPUT_PULLUP);
-  pinMode(TEAM_B, INPUT_PULLUP);
-  pinMode(TEAM_FREE, INPUT_PULLUP);
+  pinMode(TEAM_A_PIN, INPUT_PULLUP);
+  pinMode(TEAM_B_PIN, INPUT_PULLUP);
+  pinMode(TEAM_FREE_PIN, INPUT_PULLUP);
 
   // Output
   pinMode(HIT_LED0, OUTPUT);
@@ -106,12 +106,12 @@ void loop() {
           digitalWrite(HIT_LED0, HIGH);
         else if(hit==2)
           digitalWrite(HIT_LED1, HIGH);
-        else if(hit==3) {
-          digitalWrite(HIT_LED3, HIGH);
+        else if(hit==3) 
+          digitalWrite(HIT_LED2, HIGH);
         else if(hit == 4)
-          digitalWrite(HIT_LED4, HIGH);
+          digitalWrite(HIT_LED3, HIGH);
         else if(hit == 5){  // You are dead.
-          digitalWrite(HIT_LED, HIGH);
+          digitalWrite(HIT_LED4, HIGH);
           delay(200);
           while(hit==5 && digitalRead(RESET_GUN_PIN) == HIGH){
             // Blink the lights
@@ -132,16 +132,15 @@ void loop() {
         }  
       }     
       irrecv.resume(); // Go back to waiting for a value
-    }
-  } 
+    } 
   // Else if you are trying to reload the gun
   else if(digitalRead(RELOAD_GUN_PIN) == LOW){
     delay(30); // Wait for the switch to stop bounching
     if(digitalRead(RELOAD_GUN_PIN) == LOW){ // If the switch is steady
       while(digitalRead(RELOAD_GUN_PIN) == LOW){;}  // Do nothing while the hammer is back
-      digitalWrite(RELOAD_SFX, HIGH);  // Make the reload noise
+      digitalWrite(EMPT_REL_SFX, HIGH);  // Make the reload noise
       delay(triggerDelay);
-      digitalWrite(RELOAD_SFX, LOW);
+      digitalWrite(EMPT_REL_SFX, LOW);
       ammo = 10;  // Reset ammo value
     }
   }
@@ -172,10 +171,10 @@ void shoot() {
   }
   else{// Else there is no ammo left. Do not shoot and make empty sound
     // While trigger is pressed do nothing
-    digitalWrite(EMPTY_SFX, HIGH);
+    digitalWrite(EMPT_REL_SFX, HIGH);
     while(digitalRead(FIRE_GUN_PIN) == LOW){;} 
     delay(triggerDelay);  // Delay for a bit. No Rapid fire!!
-    digitalWrite(EMPTY_SFX, LOW);
+    digitalWrite(EMPT_REL_SFX, LOW);
   }
   // On the way out... 
   irrecv.enableIRIn(); // Enable the Receive in... I don't know why
