@@ -93,7 +93,7 @@ void setup()
   }
   
   // Attach some interrupts
-  attachInterrupt(FIRE_GUN_PIN, shoot, LOW);    
+  attachInterrupt(0, shoot, LOW);    
  
   irrecv.enableIRIn(); // Start the receiver
 }
@@ -113,7 +113,7 @@ void loop() {
         else if(hit == 5){  // You are dead.
           digitalWrite(HIT_LED, HIGH);
           delay(200);
-          while(hit==3 && digitalRead(5) == HIGH){
+          while(hit==5 && digitalRead(5) == HIGH){
             // Blink the lights
             digitalWrite(HIT_LED0, LOW);
             digitalWrite(HIT_LED1, LOW);
@@ -142,7 +142,7 @@ void loop() {
       digitalWrite(RELOAD_SFX, HIGH);  // Make the reload noise
       delay(triggerDelay);
       digitalWrite(RELOAD_SFX, LOW);
-      ammo = 10;
+      ammo = 10;  // Reset ammo value
     }
   }
 }  // End of main loop
@@ -172,8 +172,10 @@ void shoot() {
   }
   else{// Else there is no ammo left. Do not shoot and make empty sound
     // While trigger is pressed do nothing
+    digitalWrite(EMPTY_SFX, HIGH);
     while(digitalRead(FIRE_GUN_PIN) == LOW){;} 
     delay(triggerDelay);  // Delay for a bit. No Rapid fire!!
+    digitalWrite(EMPTY_SFX, LOW);
   }
   // On the way out... 
   irrecv.enableIRIn(); // Enable the Receive in... I don't know why
