@@ -6,6 +6,10 @@
 
 #include <IRremote.h>
 
+#ifndef INTERRUPT_H
+  #include <avr/interrupt.h>
+#endif
+
 // Declare some IR shit
 IRrecv irrecv(RECV_PIN);
 decode_results results;
@@ -89,8 +93,8 @@ void setup()
   }
   
   // Attach some interrupts
-  attachInterrupt(FIRE_GUN_PIN, shoot, LOW);  //
-  attachInterrupt(RELOAD_GUN_PIN, reload, LOW); 
+  attachInterrupt(FIRE_GUN_PIN, shoot, FALLING);    
+  attachInterrupt(RELOAD_GUN_PIN, reload, FALLING); 
   
   irrecv.enableIRIn(); // Start the receiver
 }
@@ -99,7 +103,7 @@ void loop() {
   if (irrecv.decode(&results)) {// If there is some decoded values available 
       if(results.value == currentEnemy){ // If it matches our val, increment
         hit++;
-       if (hit==1)
+        if (hit == 1)
           digitalWrite(HIT_LED0, HIGH);
         else if(hit==2)
           digitalWrite(HIT_LED1, HIGH);
@@ -110,25 +114,39 @@ void loop() {
         else if(hit == 5){  // You are dead.
           digitalWrite(HIT_LED, HIGH);
           delay(200);
-          while(hit==3 && digitalRead(5)==HIGH){
-            digitalWrite(7,LOW);
-            digitalWrite(8,LOW);
-            digitalWrite(9,LOW);
+          while(hit==3 && digitalRead(5) == HIGH){
+            // Blink the lights
+            digitalWrite(HIT_LED0, LOW);
+            digitalWrite(HIT_LED1, LOW);
+            digitalWrite(HIT_LED2, LOW);
+            digitalWrite(HIT_LED3, LOW);
+            digitalWrite(HIT_LED4, LOW);
             delay(80);
-            digitalWrite(7,HIGH);
-            digitalWrite(8,HIGH);
-            digitalWrite(9,HIGH);
+            digitalWrite(HIT_LED0, HIGH);
+            digitalWrite(HIT_LED1, HIGH);
+            digitalWrite(HIT_LED2, HIGH);
+            digitalWrite(HIT_LED3, HIGH);
+            digitalWrite(HIT_LED4, HIGH);
             delay(80);
-            digitalWrite(7,LOW);
-            digitalWrite(8,LOW);
-            digitalWrite(9,LOW);
           }
-          hit=0;
+          hit=0; // Reset the hit count, because you died
         }  
       }     
-      irrecv.resume(); // Receive the next value
+      irrecv.resume(); // Go back to waiting for a value
+    }
+  } 
+  // Else if you are trying to reload the gun
+  else if(digitalRead(RELOAD_GUN_PIN) == LOW){
+    delay(30); // Wait for the switch to stop bounching
+    if(digitalRead(RELOAD_GUN_PIN) == LOW){ // If the switch is steady
+      while(digitalRead(RELOAD_GUN_PIN) == LOW){;}  // Do nothing while the hammer is back
+      digitalWrite(RELOAD_SFX, HIGH);  // Make the reload noise
+      delay(triggerDelay);
+      digitalWrite(RELOAD_SFX, LOW);
+      ammo = 10;
     }
   }
+}  // End of main loop
 
 
 
@@ -163,17 +181,4 @@ void shoot() {
   sei();               // Enable global interrupts 
 }
 
-/*
-  Reload the gun by sliding the hammer back
-*/
-void reload(){
-  cli();  // Disable interrupts
-  while(digitalRead(RELOAD_GUN_PIN) == LOW){;} // Do nothing while the hammer is back
-  digitalWrite(RELOAD_SFX, HIGH);  // Make the reload noise
-  delay(triggerDelay);             // Delay for a bit
-  digitalWrite(RELOAD_SFX, LOW);   
-  ammo = 10;                       // Reload the gun
-  irrecv.enableIRIn(); // Enable the Receive in... I don't know why
-  sei();               // Enable global interrupts 
-}
  
