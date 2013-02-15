@@ -72,7 +72,9 @@ void setup()
   pinMode(HIT_LED1, OUTPUT);
   pinMode(HIT_LED2, OUTPUT);
   pinMode(HIT_LED3, OUTPUT);
-  pinMode(HIT_LED4, OUTPUT); 
+  pinMode(HIT_LED4, OUTPUT);
+  pinMode(SHOOT_SFX, OUTPUT);
+  pinMode(EMPT_REL_SFX, OUTPUT);
   
   delay(10);  // Not completely required but gives the
               // chances to propegate
