@@ -1,6 +1,6 @@
 /*
  * Laser Tag gun
- * An IR LED must be connecte    d to Arduino PWM pin 3.
+ * An IR LED must be connected to Arduino PWM pin 3.
  * Pew Pew
  */
 
@@ -11,7 +11,7 @@
 #endif
 
 // Declare some IR shit
-int RECV_PIN = 6;     // IR Recieve (PD6)
+int RECV_PIN = 6;     // IR Receive (PD6)
 int IR_FIRE = 3;      // IR LED for transmit(PD3)
 IRrecv irrecv(RECV_PIN);
 decode_results results;
@@ -28,7 +28,7 @@ int HIT_LED3 = 12;       // (PB4)
 int HIT_LED4 = 13;       // (PB5)
 int TEAM_A_PIN    = 0;       // Select Team A (PC0)
 int TEAM_B_PIN    = 1;       // Select Team B (PC1)
-int TEAM_FREE_PIN = 2;       // Selct Free-For-All(PC2)
+int TEAM_FREE_PIN = 2;       // Select Free-For-All(PC2)
 
 
 // Sound Effect Pins (when high, the sound plays in the gun)
@@ -40,7 +40,7 @@ int EMPT_REL_SFX = 8;   // (PB0)
 int freeForAll = 0xb25;  // Default value for free for all
 int teamA = 0xb4A;       // Value for team A
 int teamB = 0xDB;        // Value for B
-int triggerDelay = 250;  // ms that the gun will be inactve after trigger press
+int triggerDelay = 250;  // ms that the gun will be inactive after trigger press
 
 // Variables for gun functionality
 volatile int hit;
@@ -77,7 +77,7 @@ void setup()
   pinMode(EMPT_REL_SFX, OUTPUT);
   
   delay(10);  // Not completely required but gives the
-              // chances to propegate
+              // chances to propagate
               
   // Team selection
   // Check the 3 position switch to check what team mode and or team.
@@ -114,6 +114,7 @@ void loop() {
           digitalWrite(HIT_LED3, HIGH);
         else if(hit == 5){  // You are dead.
           digitalWrite(HIT_LED4, HIGH);
+          cli(); // Disables shooting when you're dead
           delay(200);
           while(hit==5 && digitalRead(RESET_GUN_PIN) == HIGH){
             // Blink the lights
@@ -131,13 +132,14 @@ void loop() {
             delay(80);
           }
           hit=0; // Reset the hit count, because you died
+          sei(); // Enables shooting. You're alive!
         }  
       }     
       irrecv.resume(); // Go back to waiting for a value
     } 
   // Else if you are trying to reload the gun
   else if(digitalRead(RELOAD_GUN_PIN) == LOW){
-    delay(30); // Wait for the switch to stop bounching
+    delay(30); // Wait for the switch to stop bouncing
     if(digitalRead(RELOAD_GUN_PIN) == LOW){ // If the switch is steady
       while(digitalRead(RELOAD_GUN_PIN) == LOW){;}  // Do nothing while the hammer is back
       digitalWrite(EMPT_REL_SFX, HIGH);  // Make the reload noise
@@ -152,7 +154,7 @@ void loop() {
 
 
 /*
-  This subroutine will be called while the interupt is called
+  This subroutine will be called while the interrupt is called
   in this subroutine a hex value will be sent via IR 
 */
 void shoot() {
