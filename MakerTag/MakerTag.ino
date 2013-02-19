@@ -132,6 +132,12 @@ void loop() {
             delay(80);
           }
           hit=0; // Reset the hit count, because you died
+          // Blink the lights
+          digitalWrite(HIT_LED0, LOW);
+          digitalWrite(HIT_LED1, LOW);
+          digitalWrite(HIT_LED2, LOW);
+          digitalWrite(HIT_LED3, LOW);
+          digitalWrite(HIT_LED4, LOW);
           sei(); // Enables shooting. You're alive!
         }  
       }     
