@@ -26,15 +26,9 @@ int HIT_LED1 = 10;       // (PB2)
 int HIT_LED2 = 11;       // (PB3)
 int HIT_LED3 = 12;       // (PB4)
 int HIT_LED4 = 13;       // (PB5)
-<<<<<<< HEAD
-int TEAM_A_PIN    = 0;       // Select Team A (PC0)
-int TEAM_B_PIN    = 1;       // Select Team B (PC1)
-int TEAM_FREE_PIN = 2;       // Select Free-For-All(PC2)
-=======
 int TEAM_A_PIN    = A0;       // Select Team A (PC0)
 int TEAM_B_PIN    = A1;       // Select Team B (PC1)
 int TEAM_FREE_PIN = A2;       // Selct Free-For-All(PC2)
->>>>>>> Fixes Wrong Assignment for Analog Pins
 
 
 // Sound Effect Pins (when high, the sound plays in the gun)
