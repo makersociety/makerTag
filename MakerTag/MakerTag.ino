@@ -5,9 +5,8 @@
  */
 
 #include <IRremote.h>
-
 #ifndef INTERRUPT_H
-  #include <avr/interrupt.h>
+#include <avr/interrupt.h>
 #endif
 
 // Declare some IR shit
