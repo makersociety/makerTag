@@ -33,7 +33,8 @@ int TEAM_FREE_PIN = A2;       // Selct Free-For-All(PC2)
 
 // Sound Effect Pins (when high, the sound plays in the gun)
 int SHOOT_SFX = 7;      // (PD7)
-int EMPT_REL_SFX = 8;   // (PB0) 
+int EMPT_REL_SFX = 8;   // (PB0)
+int HIT_SFX = A0;
 
 
 // Team Identifiers and config values
@@ -75,24 +76,12 @@ void setup()
   pinMode(HIT_LED4, OUTPUT);
   pinMode(SHOOT_SFX, OUTPUT);
   pinMode(EMPT_REL_SFX, OUTPUT);
+  pinMode(HIT_SFX, OUTPUT);
   
   delay(10);  // Not completely required but gives the
               // chances to propagate
               
-  // Team selection
-  // Check the 3 position switch to check what team mode and or team.
-  if(digitalRead(TEAM_A_PIN) == LOW){ // You're on team A
-    currentTeam = teamA;
-    currentEnemy = teamB;
-  }
-  else if(digitalRead(TEAM_B_PIN == LOW)){
-    currentTeam = teamB;
-    currentEnemy = teamA;
-  }
-  else if(digitalRead(TEAM_FREE_PIN) == LOW){
-    currentTeam = freeForAll;
-    currentEnemy = freeForAll;
-  }
+  blinkTeams();
   
   // Attach some interrupts
   attachInterrupt(0, shoot, LOW);    
@@ -103,7 +92,18 @@ void setup()
 void loop() {
   if (irrecv.decode(&results)) {// If there is some decoded values available 
       if(results.value == currentEnemy){ // If it matches our val, increment
+        
+        // You got shot, make a sound so you know
         hit++;
+        digitalWrite(HIT_SFX, HIGH);
+        delay(150);
+        digitalWrite(HIT_SFX, LOW);
+        delay(150);
+        digitalWrite(HIT_SFX, HIGH);
+        delay(150);
+        digitalWrite(HIT_SFX, LOW);
+        
+        // How dead are you?
         if (hit == 1)
           digitalWrite(HIT_LED0, HIGH);
         else if(hit==2)
@@ -123,13 +123,13 @@ void loop() {
             digitalWrite(HIT_LED2, LOW);
             digitalWrite(HIT_LED3, LOW);
             digitalWrite(HIT_LED4, LOW);
-            delay(80);
+            delay(200);
             digitalWrite(HIT_LED0, HIGH);
             digitalWrite(HIT_LED1, HIGH);
             digitalWrite(HIT_LED2, HIGH);
             digitalWrite(HIT_LED3, HIGH);
             digitalWrite(HIT_LED4, HIGH);
-            delay(80);
+            delay(200);
           }
           hit=0; // Reset the hit count, because you died
           // Blink the lights
@@ -177,6 +177,7 @@ void shoot() {
     
     // Wait for debounce and to limit shoots
     delay(triggerDelay);
+    delay(200);      // Delay more to limit shots 
     digitalWrite(SHOOT_SFX,LOW);
   }
   else{// Else there is no ammo left. Do not shoot and make empty sound
@@ -189,6 +190,79 @@ void shoot() {
   // On the way out... 
   irrecv.enableIRIn(); // Enable the Receive in... I don't know why
   sei();               // Enable global interrupts 
+}
+
+/* Assign team values.
+ * Blink LEDs just so people know what team they are on
+ */
+void blinkTeams(){
+  // Team selection
+  // Check the 3 position switch to check what team mode and or team.
+  if(digitalRead(TEAM_A_PIN) == LOW){ // You're on team A
+    currentTeam = teamA;
+    currentEnemy = teamB;
+    digitalWrite(HIT_LED0, HIGH);
+    digitalWrite(HIT_LED1, HIGH);
+    digitalWrite(HIT_LED2, HIGH);
+    delay(500);
+    digitalWrite(HIT_LED0, LOW);
+    digitalWrite(HIT_LED1, LOW);
+    digitalWrite(HIT_LED2, LOW);
+    delay(500);
+    digitalWrite(HIT_LED0, HIGH);
+    digitalWrite(HIT_LED1, HIGH);
+    digitalWrite(HIT_LED2, HIGH);
+    delay(500);
+    digitalWrite(HIT_LED0, LOW);
+    digitalWrite(HIT_LED1, LOW);
+    digitalWrite(HIT_LED2, LOW);
+  }
+  else if(digitalRead(TEAM_B_PIN == LOW)){
+    currentTeam = teamB;
+    currentEnemy = teamA;
+    digitalWrite(HIT_LED2, HIGH);
+    digitalWrite(HIT_LED3, HIGH);
+    digitalWrite(HIT_LED4, HIGH);
+    delay(500);
+    digitalWrite(HIT_LED2, LOW);
+    digitalWrite(HIT_LED3, LOW);
+    digitalWrite(HIT_LED4, LOW);
+    delay(500);
+    digitalWrite(HIT_LED2, HIGH);
+    digitalWrite(HIT_LED3, HIGH);
+    digitalWrite(HIT_LED4, HIGH);
+    delay(500);
+    digitalWrite(HIT_LED2, LOW);
+    digitalWrite(HIT_LED3, LOW);
+    digitalWrite(HIT_LED4, LOW);
+  }
+  else if(digitalRead(TEAM_FREE_PIN) == LOW){
+    currentTeam = freeForAll;
+    currentEnemy = freeForAll;
+    digitalWrite(HIT_LED0, HIGH);
+    digitalWrite(HIT_LED1, HIGH);
+    digitalWrite(HIT_LED2, HIGH);
+    digitalWrite(HIT_LED3, HIGH);
+    digitalWrite(HIT_LED4, HIGH);
+    delay(500);
+    digitalWrite(HIT_LED0, LOW);
+    digitalWrite(HIT_LED1, LOW);
+    digitalWrite(HIT_LED2, LOW);
+    digitalWrite(HIT_LED3, LOW);
+    digitalWrite(HIT_LED4, LOW);
+    delay(500);
+    digitalWrite(HIT_LED0, HIGH);
+    digitalWrite(HIT_LED1, HIGH);
+    digitalWrite(HIT_LED2, HIGH);
+    digitalWrite(HIT_LED3, HIGH);
+    digitalWrite(HIT_LED4, HIGH);
+    delay(500);
+    digitalWrite(HIT_LED0, LOW);
+    digitalWrite(HIT_LED1, LOW);
+    digitalWrite(HIT_LED2, LOW);
+    digitalWrite(HIT_LED3, LOW);
+    digitalWrite(HIT_LED4, LOW);
+  }
 }
 
  
