@@ -1,12 +1,12 @@
 // Tube Stuff
 barrel_depth = 13.9;
 barrel_length = 15;
-barrel_diameter = 22.25;
+barrel_diameter = 24.25-.75;
 tube_thickness = 2.5;
 
 
 // Lense Stuff
-culminator_lense_diameter = 27.9;
+culminator_lense_diameter = 29.9-.75;
 focal_length = 14.6;
 led_height = 4.5;
 lense_lip_depth = 2;
