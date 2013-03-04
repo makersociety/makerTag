@@ -4,12 +4,13 @@
  * Pew Pew
  */
 
-#include <IRremote.h>
+#include "IRremote.h"
+
 #ifndef INTERRUPT_H
-#include <avr/interrupt.h>
+  #include <avr/interrupt.h>
 #endif
 
-// Declare some IR shit
+// Declare some IR poop
 int RECV_PIN = 6;     // IR Receive (PD6)
 int IR_FIRE = 3;      // IR LED for transmit(PD3)
 IRrecv irrecv(RECV_PIN);
