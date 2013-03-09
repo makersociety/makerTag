@@ -217,7 +217,7 @@ void blinkTeams(){
     digitalWrite(HIT_LED1, LOW);
     digitalWrite(HIT_LED2, LOW);
   }
-   if(digitalRead(TEAM_A_PIN) == HIGH && digitalRead(TEAM_FREE_PIN) == HIGH){
+   else if(digitalRead(TEAM_A_PIN) == HIGH && digitalRead(TEAM_FREE_PIN) == HIGH){
     currentTeam = teamB;
     currentEnemy = teamA;
     digitalWrite(HIT_LED2, HIGH);
@@ -238,7 +238,7 @@ void blinkTeams(){
     digitalWrite(HIT_LED3, LOW);
     digitalWrite(HIT_LED4, LOW);
   }
-   if(digitalRead(TEAM_FREE_PIN) == LOW){
+   else if(digitalRead(TEAM_FREE_PIN) == LOW){
     currentTeam = freeForAll;
     currentEnemy = freeForAll;
     digitalWrite(HIT_LED0, HIGH);
