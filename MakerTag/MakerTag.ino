@@ -34,7 +34,7 @@ int TEAM_FREE_PIN = A2;       // Selct Free-For-All(PC2)
 // Sound Effect Pins (when high, the sound plays in the gun)
 int SHOOT_SFX = 7;      // (PD7)
 int EMPT_REL_SFX = 8;   // (PB0)
-int HIT_SFX = A0;
+int HIT_SFX = A5;
 
 
 // Team Identifiers and config values
@@ -53,8 +53,7 @@ int currentEnemy;     // People trying to kill you
 /********************
   Set up the gun. This routine runs only once
 *********************/
-void setup()
-{ 
+void setup(){ 
   // Initialize variables
   hit = 0;    // No Hits yet...
   ammo = 10;  // Start off with ten rounds
@@ -78,10 +77,11 @@ void setup()
   pinMode(EMPT_REL_SFX, OUTPUT);
   pinMode(HIT_SFX, OUTPUT);
   
-  delay(10);  // Not completely required but gives the
+  delay(50);  // Not completely required but gives the
               // chances to propagate
               
-  blinkTeams();
+  blinkTeams();  // Assigns global team values and blinks LEDS so
+                 // so people know what team they are on.
   
   // Attach some interrupts
   attachInterrupt(0, shoot, LOW);    
@@ -217,13 +217,15 @@ void blinkTeams(){
     digitalWrite(HIT_LED1, LOW);
     digitalWrite(HIT_LED2, LOW);
   }
-  else if(digitalRead(TEAM_B_PIN == LOW)){
+   if(digitalRead(TEAM_A_PIN) == HIGH && digitalRead(TEAM_FREE_PIN) == HIGH){
     currentTeam = teamB;
     currentEnemy = teamA;
     digitalWrite(HIT_LED2, HIGH);
     digitalWrite(HIT_LED3, HIGH);
     digitalWrite(HIT_LED4, HIGH);
+    digitalWrite(SHOOT_SFX, HIGH);
     delay(500);
+    digitalWrite(SHOOT_SFX, LOW);
     digitalWrite(HIT_LED2, LOW);
     digitalWrite(HIT_LED3, LOW);
     digitalWrite(HIT_LED4, LOW);
@@ -236,7 +238,7 @@ void blinkTeams(){
     digitalWrite(HIT_LED3, LOW);
     digitalWrite(HIT_LED4, LOW);
   }
-  else if(digitalRead(TEAM_FREE_PIN) == LOW){
+   if(digitalRead(TEAM_FREE_PIN) == LOW){
     currentTeam = freeForAll;
     currentEnemy = freeForAll;
     digitalWrite(HIT_LED0, HIGH);
