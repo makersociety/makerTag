@@ -187,6 +187,7 @@ void shoot() {
     delay(triggerDelay);  // Delay for a bit. No Rapid fire!!
     digitalWrite(EMPT_REL_SFX, LOW);
   }
+  while(digitalRead(FIRE_GUN_PIN) == LOW){;}
   // On the way out... 
   irrecv.enableIRIn(); // Enable the Receive in... I don't know why
   sei();               // Enable global interrupts 
